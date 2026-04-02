@@ -30,3 +30,5 @@ replay_pid*
 
 # Oracle JDK (too large for GitHub)
 src/oracleJdk-26/
+
+*.iml
