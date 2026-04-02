@@ -27,3 +27,6 @@ replay_pid*
 .idea/
 .project/
 .vscode/
+
+# Oracle JDK (too large for GitHub)
+src/oracleJdk-26/
