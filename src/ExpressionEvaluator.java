@@ -4,26 +4,15 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
-
-
-
-public class ExpressionEvaluator {
+public class ExpressionEvaluator{
 
     Set<Character> operatorSet = new HashSet<>(Arrays.asList('+', '-', '/', '*', '('));
 
-
-
-
-    public static double evaluate(String expr){
-
-
-
+    public static double evaluate(String expr) throws EvaluationException{
         return 0.0;
     }
 
     public static String formatResult(double r){
-
-
         return " ";
     }
 

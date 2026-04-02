@@ -84,7 +84,7 @@ public class CalculationWorker implements Runnable {
             session.send(response);
             ServerLogger.log("Request #%d completed for %s with %s", seq, client, response);
 
-        } catch (ExpressionEvaluator.EvaluationException e) {
+        } catch (EvaluationException e) {
             String errorMsg = "ERROR " + e.getMessage();
             session.send(errorMsg);
             ServerLogger.log("Request #%d failed for %s with %s", seq, client, errorMsg);
