@@ -33,6 +33,9 @@ public class ExpressionEvaluator{
             throw new EvaluationException("Expression cannot be empty");
         }
         String postFix = convertToPostFix(expr.trim());
+        if(postFix.trim().isEmpty()){
+            throw new EvaluationException("Expression cannot be empty");  // catches cases with only parenthesis e.g., "(())"
+        }
         return evaluatePostfix(postFix);
     }
     
@@ -57,7 +60,7 @@ public class ExpressionEvaluator{
     public static String convertToPostFix(String eq) throws EvaluationException {
         StringBuilder postFix = new StringBuilder();
         Stack<Character> stack = new Stack<>();
-        Character flag, currChar;
+        Character top, currChar;
         
         for(int i =0; i < eq.length(); i++) {
             currChar = eq.charAt(i);
@@ -72,7 +75,7 @@ public class ExpressionEvaluator{
             while(j >= 0 && eq.charAt(j) == ' ') j--;
             
             // check for unary minus: if at start, after '(', or after another operator
-            if(currChar == '-' && (j < 0 || eq.charAt(j) == '(' || isOperator(eq.charAt(j)))) {
+            if(currChar == '-' && (j < 0 || eq.charAt(j) == '(' || isOperator(eq.charAt(j)))){
                 if(!postFix.isEmpty()){ // delimit with space unless this is the first token
                     postFix.append(' ');
                 }
@@ -82,11 +85,18 @@ public class ExpressionEvaluator{
                 stack.push(currChar);
             }else if(currChar.equals(')')){
                 // pop until corresponding left parenthesis
-                while (!stack.isEmpty() && !(flag = stack.pop()).equals('(')){
-                    postFix.append(' ').append(flag);
+                boolean foundOpen = false;
+                while(!stack.isEmpty()){
+                    top = stack.pop();
+                    if(top == '('){
+                        foundOpen = true;
+                        break;
+                    }
+                    postFix.append(' ').append(top);
                 }
+                if (!foundOpen) throw new EvaluationException("Mismatched parentheses");
             }else if(isOperator(currChar)){ // binary operator
-                while (!stack.isEmpty()
+                while(!stack.isEmpty()
                         && isOperator(stack.peek())
                         && precedence(stack.peek()) >= precedence(currChar)){
                     // pop higher or equal precedence operators and delimit with spaces
@@ -116,8 +126,10 @@ public class ExpressionEvaluator{
         }
 
         // pop remaining operators
-        while(!stack.isEmpty() && (flag = stack.pop()) != '('){
-            postFix.append(' ').append(flag);
+        while(!stack.isEmpty()){
+            top = stack.pop();
+            if (top == '(') throw new EvaluationException("Mismatched parentheses");
+            postFix.append(' ').append(top);
         }
 
         return postFix.toString();
@@ -127,7 +139,7 @@ public class ExpressionEvaluator{
      * Evaluates a space-delimited postfix expression and returns the result as a double.
      * Throws EvaluationException for malformed expressions, invalid numbers, or division/modulus by zero.
      */
-    private static double evaluatePostfix(String postFix) throws EvaluationException {
+    private static double evaluatePostfix(String postFix) throws EvaluationException{
         Stack<Double> stack = new Stack<>();
         String[] tokens = postFix.split(" ");
         
@@ -144,15 +156,15 @@ public class ExpressionEvaluator{
                 stack.push(applyOperator(token.charAt(0), a, b));
             }else{
                 // operand: parse as double to handle both integers and decimals
-                try {
+                try{
                     stack.push(Double.parseDouble(token));
-                } catch (NumberFormatException e) {
+                }catch(NumberFormatException e){
                     throw new EvaluationException("Invalid number: '" + token + "'");
                 }
             }
         }
         
-        // should end up with final value on stack
+        // should end up with a single final value on stack
         if(stack.size() != 1){
             throw new EvaluationException("Invalid expression: too many operands");
         }
