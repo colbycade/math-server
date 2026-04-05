@@ -22,7 +22,7 @@ import java.util.Stack;
  *   - Empty or null expression
  */
 public class ExpressionEvaluator{
-
+    private static final int DECIMAL_PLACES = 4; // for formatting results
     private static final Set<Character> operatorSet = new HashSet<>(Arrays.asList('+', '-', '/', '*', '%'));
     
     /**
@@ -35,9 +35,18 @@ public class ExpressionEvaluator{
         String postFix = convertToPostFix(expr.trim());
         return evaluatePostfix(postFix);
     }
-
-    public static String formatResult(double r){
-        return " ";
+    
+    /**
+     * Formats the result as a string.
+     * If the result has no fractional part, return as plain integer string.
+     * Else, round to `DECIMAL_PLACES` decimal places, then remove trailing zeros and decimal point if not needed (if
+     * rounds down to integer).
+     */
+    public static String formatResult(double r) {
+        if (r == Math.floor(r)) {
+            return String.valueOf((long) r);
+        }
+        return String.format("%." + DECIMAL_PLACES + "f", r).replaceAll("0+$", "").replaceAll("\\.$", "");
     }
     
     /**
