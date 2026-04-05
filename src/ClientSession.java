@@ -27,8 +27,8 @@ public class ClientSession {
     private final long          connectTimeMillis;   // epoch ms at connect
     private final Instant       connectInstant;      // for human-readable logging
 
-    private String  name;          // set when JOIN is processed
-    private boolean connected;     // set to false on QUIT or error
+    private String  name;                   // set when JOIN is processed
+    private volatile boolean connected;     // set to false on QUIT or error
 
     /**
      * Wraps an accepted Socket in buffered I/O streams.
