@@ -4,9 +4,10 @@
 #
 # Targets:
 #   make         → compile all Java source files into bin/
-#   make server  → compile + run the server on the default port (5000)
-#   make client  → compile + run a demo client (Alice) on localhost:5000
-#   make client2 → compile + run a second demo client (Bob) on localhost:5000
+#   make server  → compile + run the server on the default port (8080)
+#   make client  → compile + run a demo client (Alice) on localhost:8080
+#   make client2 → compile + run a second demo client (Bob) on localhost:8080
+#   make demo    → compile + run server + two clients concurrently
 #   make clean   → remove compiled .class files
 # =============================================================================
 
@@ -19,12 +20,13 @@ JAVAC   = javac
 JAVA    = java
 
 # Default server port and host (can be overridden on the command line)
-PORT    = 5000
+PORT    = 8080
 HOST    = localhost
 
 # All Java source files (order matters: dependencies before dependents)
-SOURCES = $(SRC_DIR)/ServerLogger.java        \
-          $(SRC_DIR)/ExpressionEvaluator.java  \
+SOURCES = $(SRC_DIR)/EvaluationException.java	\
+		  $(SRC_DIR)/ServerLogger.java          \
+          $(SRC_DIR)/ExpressionEvaluator.java   \
           $(SRC_DIR)/ClientSession.java         \
           $(SRC_DIR)/CalculationRequest.java    \
           $(SRC_DIR)/CalculationWorker.java     \
@@ -63,3 +65,12 @@ client2: all
 clean:
 	rm -rf $(BIN_DIR)
 	@echo "Cleaned compiled files."
+
+# Run full demo with server + two concurrent clients
+.PHONY: demo
+demo: all
+	@echo "Starting server on port $(PORT)..."
+	@$(JAVA) -cp $(BIN_DIR) MathServer $(PORT) &
+	@sleep 1
+	@$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Alice &
+	@$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Bob

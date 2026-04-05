@@ -37,12 +37,12 @@ import java.util.concurrent.atomic.AtomicLong;
  * -----
  *   java MathServer [port]
  *
- *   port   TCP port to listen on (default: 5000)
+ *   port   TCP port to listen on (default: 8080)
  */
 public class MathServer {
 
     /** Default TCP port if none is provided on the command line. */
-    private static final int DEFAULT_PORT = 5000;
+    private static final int DEFAULT_PORT = 8080;
 
     public static void main(String[] args) {
 
