@@ -2,7 +2,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
-import java.util.regex.Pattern;
 
 /**
  * ExpressionEvaluator
@@ -57,6 +56,14 @@ public class ExpressionEvaluator{
                 while (!stack.isEmpty() && !(flag = stack.pop()).equals('(')){
                     postFix.append(' ').append(flag);
                 }
+            }else if(currChar == '-' && (i == 0 || eq.charAt(i-1) == '(' || isOperator(eq.charAt(i-1)))){
+                // unary minus if at start, after '(', or after another operator
+                // treat as implicit zero operand followed by binary minus operator
+                if(!postFix.isEmpty()){
+                    postFix.append(' ');
+                }
+                postFix.append('0');
+                stack.push('-');
             }else if(isOperator(currChar)){
                 while (!stack.isEmpty()
                         && isOperator(stack.peek())
