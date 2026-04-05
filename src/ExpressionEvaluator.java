@@ -24,9 +24,16 @@ import java.util.Stack;
 public class ExpressionEvaluator{
 
     private static final Set<Character> operatorSet = new HashSet<>(Arrays.asList('+', '-', '/', '*', '%'));
-
+    
+    /**
+     * Convert the input expression to postfix then evaluate it and return as double.
+     */
     public static double evaluate(String expr) throws EvaluationException{
-        return 0.0;
+        if(expr == null || expr.trim().isEmpty()){
+            throw new EvaluationException("Expression cannot be empty");
+        }
+        String postFix = convertToPostFix(expr.trim());
+        return evaluatePostfix(postFix);
     }
 
     public static String formatResult(double r){
@@ -100,6 +107,62 @@ public class ExpressionEvaluator{
         }
 
         return postFix.toString();
+    }
+    
+    /**
+     * Evaluates a space-delimited postfix expression and returns the result as a double.
+     * Throws EvaluationException for malformed expressions, invalid numbers, or division/modulus by zero.
+     */
+    private static double evaluatePostfix(String postFix) throws EvaluationException {
+        Stack<Double> stack = new Stack<>();
+        String[] tokens = postFix.split(" ");
+        
+        for(String token : tokens){
+            if(token.isEmpty()){
+                continue; // shouldn't happen but just in case
+            }else if(isOperator(token.charAt(0)) && token.length() == 1){
+                // binary operator: pop two operands and apply operator to them
+                if(stack.size() < 2){
+                    throw new EvaluationException("Invalid expression: missing operands");
+                }
+                double b = stack.pop();
+                double a = stack.pop();
+                stack.push(applyOperator(token.charAt(0), a, b));
+            }else{
+                // operand: parse as double to handle both integers and decimals
+                try {
+                    stack.push(Double.parseDouble(token));
+                } catch (NumberFormatException e) {
+                    throw new EvaluationException("Invalid number: '" + token + "'");
+                }
+            }
+        }
+        
+        // should end up with final value on stack
+        if(stack.size() != 1){
+            throw new EvaluationException("Invalid expression: too many operands");
+        }
+        return stack.pop();
+    }
+    
+    /**
+     * Applies a binary operator to two operands and returns the result.
+     * Throws EvaluationException for division or modulus by zero, or unknown operators.
+     */
+    private static double applyOperator(char op, double a, double b) throws EvaluationException{
+        switch(op){
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/':
+                if (b == 0) throw new EvaluationException("Division by zero");
+                return a / b;
+            case '%':
+                if (b == 0) throw new EvaluationException("Modulus by zero");
+                return a % b;
+            default:
+                throw new EvaluationException("Unknown operator: " + op);
+        }
     }
     
     private static boolean isOperator(char c){
