@@ -53,12 +53,12 @@ server: all
 # Run a first demo client (Alice)
 .PHONY: client
 client: all
-	$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Alice
+	$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Alice --demo
 
 # Run a second demo client (Bob) — open in a separate terminal
 .PHONY: client2
 client2: all
-	$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Bob
+	$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Bob --demo
 
 # Remove compiled classes
 .PHONY: clean
@@ -66,11 +66,14 @@ clean:
 	rm -rf $(BIN_DIR)
 	@echo "Cleaned compiled files."
 
-# Run full demo with server + two concurrent clients
+# Run full demo with server + two concurrent clients in same terminal
 .PHONY: demo
 demo: all
 	@echo "Starting server on port $(PORT)..."
-	@$(JAVA) -cp $(BIN_DIR) MathServer $(PORT) &
-	@sleep 1
-	@$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Alice &
-	@$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Bob
+	@$(JAVA) -cp $(BIN_DIR) MathServer $(PORT) & \
+	SERVER_PID=$$!; \
+	sleep 1; \
+	$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Alice --demo & \
+	$(JAVA) -cp $(BIN_DIR) MathClient $(HOST) $(PORT) Bob --demo; \
+	echo "Demo complete. Shutting down server (PID $$SERVER_PID)..."; \
+	kill $$SERVER_PID
