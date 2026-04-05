@@ -65,6 +65,19 @@ public class ExpressionEvaluator{
             if(currChar.equals(' ')){
                 // skip spaces
                 continue;
+            }
+            
+            // skip spaces to find previous non-space character
+            int j = i - 1;
+            while(j >= 0 && eq.charAt(j) == ' ') j--;
+            
+            // check for unary minus: if at start, after '(', or after another operator
+            if(currChar == '-' && (j < 0 || eq.charAt(j) == '(' || isOperator(eq.charAt(j)))) {
+                if(!postFix.isEmpty()){ // delimit with space unless this is the first token
+                    postFix.append(' ');
+                }
+                postFix.append('0');
+                stack.push('-');
             }else if(currChar.equals('(')){
                 stack.push(currChar);
             }else if(currChar.equals(')')){
@@ -72,15 +85,7 @@ public class ExpressionEvaluator{
                 while (!stack.isEmpty() && !(flag = stack.pop()).equals('(')){
                     postFix.append(' ').append(flag);
                 }
-            }else if(currChar == '-' && (i == 0 || eq.charAt(i-1) == '(' || isOperator(eq.charAt(i-1)))){
-                // unary minus if at start, after '(', or after another operator
-                // treat as implicit zero operand followed by binary minus operator
-                if(!postFix.isEmpty()){
-                    postFix.append(' ');
-                }
-                postFix.append('0');
-                stack.push('-');
-            }else if(isOperator(currChar)){
+            }else if(isOperator(currChar)){ // binary operator
                 while (!stack.isEmpty()
                         && isOperator(stack.peek())
                         && precedence(stack.peek()) >= precedence(currChar)){
