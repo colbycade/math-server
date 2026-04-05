@@ -30,14 +30,13 @@ import java.util.concurrent.atomic.AtomicLong;
  *     └── sends RESULT or ERROR back to the correct client
  *
  * The single CalculationWorker is the key architectural decision: it guarantees
- * that requests from ALL clients are processed in the exact order they arrived,
- * satisfying requirement #5 in the assignment.
+ * that requests from ALL clients are processed in the exact order they arrived.
  *
  * USAGE
  * -----
  *   java MathServer [port]
  *
- *   port   TCP port to listen on (default: 8080)
+ *   port - TCP port to listen on (default: 8080)
  */
 public class MathServer {
 

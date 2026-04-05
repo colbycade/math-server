@@ -92,7 +92,7 @@ public class ClientHandler implements Runnable {
 
         // Validate: must start with "JOIN " followed by a non-empty name
         if (!line.toUpperCase().startsWith("JOIN ")) {
-            session.send("ERROR first message must be JOIN <name>");
+            session.send("ERROR First message must be JOIN <name>");
             ServerLogger.log("Rejected client at %s — bad JOIN: \"%s\"",
                     session.getRemoteAddress(), line);
             session.close();
@@ -101,7 +101,7 @@ public class ClientHandler implements Runnable {
 
         String name = line.substring(5).trim(); // everything after "JOIN "
         if (name.isEmpty()) {
-            session.send("ERROR name cannot be empty");
+            session.send("ERROR Name cannot be empty");
             session.close();
             return false;
         }

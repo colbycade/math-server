@@ -45,8 +45,8 @@ public class ExpressionEvaluator{
      * Else, round to `DECIMAL_PLACES` decimal places, then remove trailing zeros and decimal point if not needed (if
      * rounds down to integer).
      */
-    public static String formatResult(double r) {
-        if (r == Math.floor(r)) {
+    public static String formatResult(double r){
+        if(r == Math.floor(r)){
             return String.valueOf((long) r);
         }
         return String.format("%." + DECIMAL_PLACES + "f", r).replaceAll("0+$", "").replaceAll("\\.$", "");
@@ -57,12 +57,12 @@ public class ExpressionEvaluator{
      * Doesn't support variables since this is used to evaluate numeric expressions.
      * Throws EvaluationException for invalid characters or mismatched parentheses.
      */
-    public static String convertToPostFix(String eq) throws EvaluationException {
+    public static String convertToPostFix(String eq) throws EvaluationException{
         StringBuilder postFix = new StringBuilder();
         Stack<Character> stack = new Stack<>();
         Character top, currChar;
         
-        for(int i =0; i < eq.length(); i++) {
+        for(int i =0; i < eq.length(); i++){
             currChar = eq.charAt(i);
             
             if(currChar.equals(' ')){
@@ -94,7 +94,7 @@ public class ExpressionEvaluator{
                     }
                     postFix.append(' ').append(top);
                 }
-                if (!foundOpen) throw new EvaluationException("Mismatched parentheses");
+                if(!foundOpen) throw new EvaluationException("Mismatched parentheses");
             }else if(isOperator(currChar)){ // binary operator
                 while(!stack.isEmpty()
                         && isOperator(stack.peek())
@@ -128,7 +128,7 @@ public class ExpressionEvaluator{
         // pop remaining operators
         while(!stack.isEmpty()){
             top = stack.pop();
-            if (top == '(') throw new EvaluationException("Mismatched parentheses");
+            if(top == '(') throw new EvaluationException("Mismatched parentheses");
             postFix.append(' ').append(top);
         }
 
@@ -181,10 +181,10 @@ public class ExpressionEvaluator{
             case '-': return a - b;
             case '*': return a * b;
             case '/':
-                if (b == 0) throw new EvaluationException("Division by zero");
+                if(b == 0) throw new EvaluationException("Division by zero");
                 return a / b;
             case '%':
-                if (b == 0) throw new EvaluationException("Modulus by zero");
+                if(b == 0) throw new EvaluationException("Modulus by zero");
                 return a % b;
             default:
                 throw new EvaluationException("Unknown operator: " + op);
@@ -196,8 +196,8 @@ public class ExpressionEvaluator{
     }
     
     private static int precedence(char op){
-        if (op == '+' || op == '-') return 1;
-        if (op == '*' || op == '/' || op == '%') return 2;
+        if(op == '+' || op == '-') return 1;
+        if(op == '*' || op == '/' || op == '%') return 2;
         return 0;
     }
 }
