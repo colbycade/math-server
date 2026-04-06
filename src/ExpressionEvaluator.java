@@ -57,13 +57,13 @@ public class ExpressionEvaluator{
      * Doesn't support variables since this is used to evaluate numeric expressions.
      * Throws EvaluationException for invalid characters or mismatched parentheses.
      */
-    public static String convertToPostFix(String eq) throws EvaluationException{
+    public static String convertToPostFix(String expr) throws EvaluationException{
         StringBuilder postFix = new StringBuilder();
         Stack<Character> stack = new Stack<>();
         Character top, currChar;
         
-        for(int i =0; i < eq.length(); i++){
-            currChar = eq.charAt(i);
+        for(int i =0; i < expr.length(); i++){
+            currChar = expr.charAt(i);
             
             if(currChar.equals(' ')){
                 // skip spaces
@@ -72,10 +72,10 @@ public class ExpressionEvaluator{
             
             // skip spaces to find previous non-space character
             int j = i - 1;
-            while(j >= 0 && eq.charAt(j) == ' ') j--;
+            while(j >= 0 && expr.charAt(j) == ' ') j--;
             
             // check for unary minus: if at start, after '(', or after another operator
-            if(currChar == '-' && (j < 0 || eq.charAt(j) == '(' || isOperator(eq.charAt(j)))){
+            if(currChar == '-' && (j < 0 || expr.charAt(j) == '(' || isOperator(expr.charAt(j)))){
                 if(!postFix.isEmpty()){ // delimit with space unless this is the first token
                     postFix.append(' ');
                 }
@@ -111,12 +111,12 @@ public class ExpressionEvaluator{
                 }
                 // append full number token including multiple digits or a single decimal point
                 boolean seenDecimal = false;
-                while(i < eq.length() && (Character.isDigit(eq.charAt(i)) || eq.charAt(i) == '.')){
-                    if(eq.charAt(i) == '.'){
+                while(i < expr.length() && (Character.isDigit(expr.charAt(i)) || expr.charAt(i) == '.')){
+                    if(expr.charAt(i) == '.'){
                         if(seenDecimal) throw new EvaluationException("Invalid number: multiple decimal points");
                         seenDecimal = true;
                     }
-                    postFix.append(eq.charAt(i));
+                    postFix.append(expr.charAt(i));
                     i++;
                 }
                 i--; // adjust for extra increment at end of inner loop

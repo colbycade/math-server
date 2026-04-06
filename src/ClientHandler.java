@@ -157,7 +157,7 @@ public class ClientHandler implements Runnable {
 
             } else {
                 // Unknown or malformed command
-                session.send("ERROR malformed request");
+                session.send("ERROR Malformed request");
                 ServerLogger.log("Malformed message from %s: \"%s\"", name, line);
             }
         }
@@ -177,7 +177,7 @@ public class ClientHandler implements Runnable {
         String expression = line.substring(5).trim();
 
         if (expression.isEmpty()) {
-            session.send("ERROR empty expression");
+            session.send("ERROR Empty expression");
             return;
         }
 
@@ -192,7 +192,7 @@ public class ClientHandler implements Runnable {
             queue.put(req); // put() blocks if queue is full (LinkedBlockingQueue never fills)
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            session.send("ERROR server interrupted");
+            session.send("ERROR Server interrupted");
         }
 
         // Note: we do NOT log "Request #N from X" here.
