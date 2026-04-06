@@ -1,11 +1,10 @@
-public class EvaluationException extends Exception{
+public class EvaluationException extends Exception {
 
-
-    EvaluationException(){
+    EvaluationException() {
         super("Invalid Expr");
     }
 
-    EvaluationException(String message){
+    EvaluationException(String message) {
         super(message);
     }
 }

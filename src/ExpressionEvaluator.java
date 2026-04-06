@@ -53,13 +53,13 @@ public class ExpressionEvaluator{
     }
     
     /**
-     * Converts an infix expression to a space-delimited postfix string.
+     * Converts an infix expression to a space-delimited postfix string using the shunting-yard algorithm.
      * Doesn't support variables since this is used to evaluate numeric expressions.
      * Throws EvaluationException for invalid characters or mismatched parentheses.
      */
     public static String convertToPostFix(String expr) throws EvaluationException{
         StringBuilder postFix = new StringBuilder();
-        Stack<Character> stack = new Stack<>();
+        Stack<Character> opStack = new Stack<>();
         Character top, currChar;
         
         for(int i =0; i < expr.length(); i++){
@@ -80,14 +80,14 @@ public class ExpressionEvaluator{
                     postFix.append(' ');
                 }
                 postFix.append('0');
-                stack.push('-');
+                opStack.push('-');
             }else if(currChar.equals('(')){
-                stack.push(currChar);
+                opStack.push(currChar);
             }else if(currChar.equals(')')){
                 // pop until corresponding left parenthesis
                 boolean foundOpen = false;
-                while(!stack.isEmpty()){
-                    top = stack.pop();
+                while(!opStack.isEmpty()){
+                    top = opStack.pop();
                     if(top == '('){
                         foundOpen = true;
                         break;
@@ -96,14 +96,14 @@ public class ExpressionEvaluator{
                 }
                 if(!foundOpen) throw new EvaluationException("Mismatched parentheses");
             }else if(isOperator(currChar)){ // binary operator
-                while(!stack.isEmpty()
-                        && isOperator(stack.peek())
-                        && precedence(stack.peek()) >= precedence(currChar)){
+                while(!opStack.isEmpty()
+                        && isOperator(opStack.peek())
+                        && precedence(opStack.peek()) >= precedence(currChar)){
                     // pop higher or equal precedence operators and delimit with spaces
-                    postFix.append(' ').append(stack.pop());
+                    postFix.append(' ').append(opStack.pop());
                 }
                 
-                stack.push(currChar);
+                opStack.push(currChar);
             }else if(Character.isDigit(currChar) || currChar == '.'){
                 // delimit with space unless this is the first token
                 if(!postFix.isEmpty()){
@@ -126,8 +126,8 @@ public class ExpressionEvaluator{
         }
 
         // pop remaining operators
-        while(!stack.isEmpty()){
-            top = stack.pop();
+        while(!opStack.isEmpty()){
+            top = opStack.pop();
             if(top == '(') throw new EvaluationException("Mismatched parentheses");
             postFix.append(' ').append(top);
         }
