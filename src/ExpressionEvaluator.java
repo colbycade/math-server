@@ -62,7 +62,7 @@ public class ExpressionEvaluator{
         Stack<Character> opStack = new Stack<>();
         Character top, currChar;
         
-        for(int i=0; i <expr.length(); i++){
+        for(int i=0; i < expr.length(); i++){
             currChar = expr.charAt(i);
             
             if(currChar.equals(' ')){
