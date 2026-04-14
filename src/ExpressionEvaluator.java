@@ -62,7 +62,7 @@ public class ExpressionEvaluator{
         Stack<Character> opStack = new Stack<>();
         Character top, currChar;
         
-        for(int i =0; i < expr.length(); i++){
+        for(int i=0; i <expr.length(); i++){
             currChar = expr.charAt(i);
             
             if(currChar.equals(' ')){
@@ -76,7 +76,7 @@ public class ExpressionEvaluator{
             
             // check for unary minus: if at start, after '(', or after another operator
             if(currChar == '-' && (j < 0 || expr.charAt(j) == '(' || isOperator(expr.charAt(j)))){
-                if(!postFix.isEmpty()){ // delimit with space unless this is the first token
+                if(postFix.length() > 0){ // delimit with space unless this is the first token
                     postFix.append(' ');
                 }
                 postFix.append('0');
@@ -106,7 +106,7 @@ public class ExpressionEvaluator{
                 opStack.push(currChar);
             }else if(Character.isDigit(currChar) || currChar == '.'){
                 // delimit with space unless this is the first token
-                if(!postFix.isEmpty()){
+                if(postFix.length() > 0){
                     postFix.append(' ');
                 }
                 // append full number token including multiple digits or a single decimal point
