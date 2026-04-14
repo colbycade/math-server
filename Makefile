@@ -1,15 +1,10 @@
-# =============================================================================
-# Makefile for Math Server / Client
-# CE/CS 4390 Computer Networks Project – Spring 2026
-#
 # Targets:
-#   make         → compile all Java source files into bin/
-#   make server  → compile + run the server on the default port (8080)
-#   make client  → compile + run a demo client (Alice) on localhost:8080
-#   make client2 → compile + run a second demo client (Bob) on localhost:8080
-#   make demo    → compile + run server + two clients concurrently
-#   make clean   → remove compiled .class files
-# =============================================================================
+#   make          compile all Java source files into bin/
+#   make server   compile + run the server on the default port (8080)
+#   make client   compile + run a demo client (Alice) on localhost:8080
+#   make client2  compile + run a second demo client (Bob) on localhost:8080
+#   make demo     compile + run server + two clients concurrently
+#   make clean    remove compiled .class files
 
 # Source and output directories
 SRC_DIR = src

@@ -115,7 +115,7 @@ public class MathClient {
         }
     }
     
-     /** Demo mode: sends 3 sample expressions at random delays then quits */
+     /** ends 3 sample expressions at random delays then quits */
     private static void runDemoMode(String clientName,
                                     PrintWriter writer,
                                     BufferedReader reader) throws IOException {

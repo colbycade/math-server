@@ -51,12 +51,12 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            // --- Step 1: Handshake — expect JOIN <name> ---
+            // Handshake — expect JOIN <name>
             if (!handleJoin()) {
                 return; // invalid handshake; session already closed inside handleJoin
             }
 
-            // --- Step 2: Command loop ---
+            // Command loop
             handleCommands();
 
         } catch (IOException e) {
@@ -67,9 +67,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    // -------------------------------------------------------------------------
     // Handshake
-    // -------------------------------------------------------------------------
 
     /**
      * Reads the first line and verifies it is a valid JOIN command.
@@ -118,9 +116,7 @@ public class ClientHandler implements Runnable {
         return true;
     }
 
-    // -------------------------------------------------------------------------
     // Command loop
-    // -------------------------------------------------------------------------
 
     /**
      * Reads and dispatches protocol messages until the connection ends.
@@ -163,9 +159,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    // -------------------------------------------------------------------------
     // Command handlers
-    // -------------------------------------------------------------------------
 
     /**
      * Handles a CALC command by extracting the expression and enqueuing a request.

@@ -8,30 +8,6 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * MathServer  —  entry point for the server application.
  *
- * ARCHITECTURE OVERVIEW
- * ----------------------
- *
- *   Main thread
- *     └── opens ServerSocket on <port>
- *     └── starts CalculationWorker (daemon thread)
- *     └── accept() loop:
- *           for each client → creates ClientSession
- *                           → spawns ClientHandler thread
- *
- *   ClientHandler thread  (one per client)
- *     └── handles JOIN handshake
- *     └── reads CALC / QUIT messages
- *     └── on CALC → enqueues CalculationRequest into shared queue
- *     └── on QUIT → sends ACK QUIT, closes session
- *
- *   CalculationWorker thread  (single, shared)
- *     └── dequeues requests in FIFO order
- *     └── evaluates the expression
- *     └── sends RESULT or ERROR back to the correct client
- *
- * The single CalculationWorker is the key architectural decision: it guarantees
- * that requests from ALL clients are processed in the exact order they arrived.
- *
  * USAGE
  * -----
  *   java MathServer [port]
@@ -45,7 +21,7 @@ public class MathServer {
 
     public static void main(String[] args) {
 
-        // --- Parse command-line arguments ---
+        //  Parse command-line arguments
         int port = DEFAULT_PORT;
         if (args.length >= 1) {
             try {
@@ -56,10 +32,10 @@ public class MathServer {
             }
         }
 
-        // --- Shared state ---
+        // Shared state 
 
         // The FIFO queue shared between all ClientHandlers and the CalculationWorker.
-        // LinkedBlockingQueue is unbounded and thread-safe, making it ideal here.
+        // LinkedBlockingQueue is unbounded and thread-safe
         BlockingQueue<CalculationRequest> requestQueue = new LinkedBlockingQueue<>();
 
         // A single global counter for assigning unique sequence numbers to each CALC
@@ -67,12 +43,12 @@ public class MathServer {
         // multiple ClientHandler threads can call it concurrently without races.
         AtomicLong sequenceCounter = new AtomicLong(1);
 
-        // --- Start the single CalculationWorker thread ---
+        //  Start the single CalculationWorker thread
         Thread workerThread = new Thread(new CalculationWorker(requestQueue), "CalculationWorker");
         workerThread.setDaemon(true); // dies automatically when the JVM exits
         workerThread.start();
 
-        // --- Open the server socket and accept connections ---
+        //  Open the server socket and accept connections 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             ServerLogger.log("MathServer listening on port %d", port);
             ServerLogger.log("Waiting for clients...");

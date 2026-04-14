@@ -48,9 +48,7 @@ public class ClientSession {
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
-    // -------------------------------------------------------------------------
     // I/O helpers
-    // -------------------------------------------------------------------------
 
     /**
      * Sends one line of text to the client.
@@ -74,9 +72,7 @@ public class ClientSession {
         return reader.readLine();
     }
 
-    // -------------------------------------------------------------------------
     // Lifecycle
-    // -------------------------------------------------------------------------
 
     /**
      * Marks the session as disconnected and closes the underlying socket.
@@ -98,9 +94,7 @@ public class ClientSession {
         return (System.currentTimeMillis() - connectTimeMillis) / 1000.0;
     }
 
-    // -------------------------------------------------------------------------
     // Getters / setters
-    // -------------------------------------------------------------------------
 
     public String  getName()          { return name; }
     public void    setName(String n)  { this.name = n; }
