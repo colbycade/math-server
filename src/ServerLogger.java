@@ -34,7 +34,7 @@ public class ServerLogger {
      * @param format  printf format string
      * @param args    format arguments
      */
-    public static void log(String format, Object... args) {
+    public static synchronized void log(String format, Object... args) {
         log(String.format(format, args));
     }
 }
